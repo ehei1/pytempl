@@ -1,2 +1,2 @@
 # pytempl
-C++ template implementation from python module
+C++ template implementation of python module
