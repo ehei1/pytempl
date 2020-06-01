@@ -22,7 +22,7 @@ namespace test
 			std::vector<int> i{ 6,7,8,9,10 };
 			std::vector<std::string> s{ "ax", "bbbb", "c", "d" };
 
-			auto r{ pytempl::Zip<decltype( f ), decltype( i ), decltype( s )>( f, i, s ) };
+			auto r{ pytempl::zip( f, i, s ) };
 			int count{};
 
 			for ( auto v : r ) {
@@ -47,7 +47,7 @@ namespace test
 			};
 			std::vector<Test> t{ { 1, 0 },{ 2,0 } };
 
-			auto r{ pytempl::Zip<decltype( t )>( t ) };
+			auto r{ pytempl::zip( t ) };
 
 			for ( auto v : r ) {
 				auto& vv = std::get<0>( v );
@@ -61,7 +61,7 @@ namespace test
 		TEST_METHOD( TestConstContainer )
 		{
 			const std::vector<int> i{ 0,1,2,3,4 };
-			auto r{ pytempl::Zip<decltype( i )>( i ) };
+			auto r{ pytempl::zip( i ) };
 
 			for ( auto v : r ) {
 				int ii;
@@ -78,7 +78,7 @@ namespace test
 		{
 			std::vector<int> i{ 0,1,2,3,4 };
 			auto& ri{ i };
-			auto r{ pytempl::Zip<decltype( ri )>( ri ) };
+			auto r{ pytempl::zip( ri ) };
 
 			for ( auto v : r ) {
 				int ii;
@@ -95,7 +95,7 @@ namespace test
 		{
 			const std::vector<int> i{ 0,1,2,3,4 };
 			auto& ri{ i };
-			auto r{ pytempl::Zip<decltype( ri )>( ri ) };
+			auto r{ pytempl::zip( ri ) };
 
 			for ( auto v : r ) {
 				int ii;
@@ -114,8 +114,7 @@ namespace test
 			Int_container i(10);
 			std::iota( std::begin( i ), std::end( i ), 0 );
 
-			//using Zip_type = pytempl::Zip<decltype( i )>;
-			//auto zip{ Zip_type( i ) };
+			//auto zip = pytempl::zip( i );
 
 			//Int_container ii;
 			//auto insert = []( auto vv ) {

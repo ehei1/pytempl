@@ -19,7 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="pytempl\common\_container_adaptor.h" />
+    <ClInclude Include="pytempl\enumerate.h" />
     <ClInclude Include="pytempl\zip.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1F7AAD52-9EB7-4AAB-86FC-FDF4E1C369EE}</ProjectGuid>
