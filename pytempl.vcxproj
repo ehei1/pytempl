@@ -30,7 +30,7 @@
     <ProjectGuid>{1F7AAD52-9EB7-4AAB-86FC-FDF4E1C369EE}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>pytempl</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
