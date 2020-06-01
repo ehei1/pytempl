@@ -2,6 +2,19 @@
 
 #include <set>
 #include <tuple>
+#include <type_traits>
+
+/*
+auto z{ Zip<std::vector<int>, std::vector<float>>(iv, fv) };
+
+for(auto v : z ) {
+int i{};
+float f{};
+
+std::tie( i, f ) = v;
+auto& v = std::get<0>; // int&
+}
+*/
 
 
 namespace pytempl {
@@ -11,7 +24,7 @@ namespace pytempl {
 	public:
 		T m_iterator;
 
-		using value_type = typename T::value_type;
+		using value_type = typename T::reference;
 
 	public:
 		_Container_iterator( T& t ) : m_iterator{ t }
@@ -89,47 +102,67 @@ namespace pytempl {
 	};
 
 	template<typename T>
-	class _Reference_container
+	class _Container_adaptor
+	{
+	protected:
+		using iterator_type = typename T::iterator;
+
+	public:
+		iterator_type begin( T& t )
+		{
+			return std::begin( t );
+		}
+
+		iterator_type end( T& t )
+		{
+			return std::end( t );
+		}
+	};
+
+	template<typename T>
+	class _Container_adaptor<T const>
+	{
+	protected:
+		using iterator_type = typename T::const_iterator;
+
+	public:
+		iterator_type begin( T const& t )
+		{
+			return std::cbegin( t );
+		}
+
+		iterator_type end( T const& t )
+		{
+			return std::cend( t );
+		}
+	};
+
+	template<typename T, typename U = std::remove_reference_t<T>>
+	class _Reference_container : public _Container_adaptor<U>
 	{
 		T& m_container;
-
-	protected:
-		using value_type = typename T::value_type;
-		using iterator = typename T::iterator;
-		using const_iterator = typename T::const_iterator;
+		using iterator_type = typename _Container_adaptor<U>::iterator_type;
 
 	public:
 		_Reference_container( T& t ) : m_container{ t }
 		{}
 
-		iterator begin()
+		iterator_type begin()
 		{
-			return std::begin( m_container );
+			return _Container_adaptor<U>::begin( m_container );
 		}
 
-		iterator end()
+		iterator_type end()
 		{
-			return std::end( m_container );
-		}
-
-		const_iterator begin() const
-		{
-			return std::cbegin( m_container );
-		}
-
-		const_iterator end() const
-		{
-			return std::cend( m_container );
+			return _Container_adaptor<U>::end( m_container );
 		}
 	};
 
 	template<typename...Ts>
-	class Zip : _Reference_container<Ts>...
+	class Zip : public _Reference_container<Ts>...
 	{
 	public:
-		using value_type = std::tuple<typename _Reference_container<Ts>::value_type...>;
-		using iterator = Container_iterator<typename _Reference_container<Ts>::iterator...>;
-		using const_iterator = Container_iterator<typename _Reference_container<Ts>::const_iterator...>;
+		using iterator = Container_iterator<typename _Reference_container<Ts>::iterator_type...>;
 
 	public:
 		Zip( Ts&...ts ) : _Reference_container<Ts>( ts )...
@@ -143,16 +176,6 @@ namespace pytempl {
 		iterator end()
 		{
 			return iterator{ _Reference_container<Ts>::end()... };
-		}
-
-		const_iterator begin() const
-		{
-			return const_iterator{ _Reference_container<Ts>::begin()... };
-		}
-
-		const_iterator end() const
-		{
-			return const_iterator{ _Reference_container<Ts>::end()... };
 		}
 	};
 };

@@ -29,8 +29,8 @@ namespace test
 				float ff;
 				int ii;
 				std::string ss;
-
 				std::tie( ff, ii, ss ) = v;
+
 				std::cout << ff << "\t" << ii << "\t" << ss << std::endl;
 
 				++count;
@@ -39,11 +39,80 @@ namespace test
 			Assert::IsTrue( count == std::min( { f.size(), i.size(), s.size() } ) );
 		}
 
+		TEST_METHOD( TestSetValue )
+		{
+			struct Test {
+				int i;
+				int j;
+			};
+			std::vector<Test> t{ { 1, 0 },{ 2,0 } };
+
+			auto r{ pytempl::Zip<decltype( t )>( t ) };
+
+			for ( auto v : r ) {
+				auto& vv = std::get<0>( v );
+				vv.i = 100;
+			}
+
+			auto check = []( const Test& t ) { return t.i == 100; };
+			Assert::IsTrue( std::all_of(std::cbegin(t), std::cend(t), check ) );
+		}
+
+		TEST_METHOD( TestConstContainer )
+		{
+			const std::vector<int> i{ 0,1,2,3,4 };
+			auto r{ pytempl::Zip<decltype( i )>( i ) };
+
+			for ( auto v : r ) {
+				int ii;
+
+				std::tie( ii ) = v;
+
+				std::cout << ii << std::endl;
+			}
+
+			Assert::IsTrue( true );
+		}
+
+		TEST_METHOD( TestRefContainer )
+		{
+			std::vector<int> i{ 0,1,2,3,4 };
+			auto& ri{ i };
+			auto r{ pytempl::Zip<decltype( ri )>( ri ) };
+
+			for ( auto v : r ) {
+				int ii;
+
+				std::tie( ii ) = v;
+
+				std::cout << ii << std::endl;
+			}
+
+			Assert::IsTrue( true );
+		}
+
+		TEST_METHOD( TestConstRefContainer )
+		{
+			const std::vector<int> i{ 0,1,2,3,4 };
+			auto& ri{ i };
+			auto r{ pytempl::Zip<decltype( ri )>( ri ) };
+
+			for ( auto v : r ) {
+				int ii;
+
+				std::tie( ii ) = v;
+
+				std::cout << ii << std::endl;
+			}
+
+			Assert::IsTrue( true );
+		}
+
 		TEST_METHOD( TestConstIteration )
 		{
-			//using Int_container = std::vector<int>;
-			//Int_container i(10);
-			//std::iota( std::begin( i ), std::end( i ), 0 );
+			using Int_container = std::vector<int>;
+			Int_container i(10);
+			std::iota( std::begin( i ), std::end( i ), 0 );
 
 			//using Zip_type = pytempl::Zip<decltype( i )>;
 			//auto zip{ Zip_type( i ) };
@@ -57,6 +126,8 @@ namespace test
 			//	return v;
 			//};
 			//std::transform( std::begin( zip ), std::end( zip ), std::back_inserter( ii ), insert );
+
+			Assert::IsTrue( true );
 		}
 	};
 }
