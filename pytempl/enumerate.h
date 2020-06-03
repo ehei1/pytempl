@@ -35,12 +35,12 @@ namespace pytempl {
 			return *this;
 		}
 
-		bool operator==(Enumerate_iterator<ITER, START>& iter)
+		bool operator==(const Enumerate_iterator<ITER, START>& iter) const
 		{
 			return iter.m_iterator == m_iterator;
 		}
 
-		bool operator!=(Enumerate_iterator<ITER, START>& iter)
+		bool operator!=(const Enumerate_iterator<ITER, START>& iter) const
 		{
 			return !operator==(iter);
 		}

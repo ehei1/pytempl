@@ -24,7 +24,7 @@ namespace pytempl {
 		_Container_iterator( T& t ) : m_iterator{ t }
 		{}
 
-		value_type get_value()
+		value_type get_value() const
 		{
 			return *m_iterator;
 		}
@@ -36,7 +36,7 @@ namespace pytempl {
 			return true;
 		}
 
-		bool operator==( _Container_iterator<T>& _iterator )
+		bool operator==( const _Container_iterator<T>& _iterator ) const
 		{
 			return _iterator != m_iterator;
 		}
@@ -59,7 +59,7 @@ namespace pytempl {
 		Container_iterator( Ts&&...ts ) : _Container_iterator<Ts>( ts )...
 		{}
 
-		value_type operator*()
+		value_type operator*() const
 		{
 			return{ _Container_iterator<Ts>::get_value()... };
 		}
@@ -69,19 +69,19 @@ namespace pytempl {
 			std::initializer_list<bool>{ _Container_iterator<Ts>::iterate()... };
 		}
 
-		bool operator==( Container_iterator<Ts...>& iterator )
+		bool operator==( const Container_iterator<Ts...>& iterator ) const
 		{
 			return _is_equal<Ts...>( iterator );
 		}
 
-		bool operator!=( Container_iterator<Ts...>& iterator )
+		bool operator!=( const Container_iterator<Ts...>& iterator ) const
 		{
 			return !operator==( iterator );
 		}
 
 	private:
 		template<typename A, typename...As>
-		bool _is_equal( Container_iterator<Ts...>& iterator )
+		bool _is_equal( const Container_iterator<Ts...>& iterator ) const
 		{
 			auto lhs{ _Container_iterator<A>::m_iterator };
 			auto rhs{ static_cast<_Container_iterator<A>>( iterator ).m_iterator };
@@ -111,12 +111,12 @@ namespace pytempl {
 		_Reference_container( T& t ) : m_container{ t }
 		{}
 
-		iterator_type begin()
+		iterator_type begin() const
 		{
 			return _Container_adaptor<T>::begin( m_container );
 		}
 
-		iterator_type end() 
+		iterator_type end() const
 		{
 			return _Container_adaptor<T>::end( m_container );
 		}
@@ -132,12 +132,12 @@ namespace pytempl {
 		_Zip ( Ts&...ts ) : _Reference_container<Ts>( ts )...
 		{}
 
-		iterator begin()
+		iterator begin() const
 		{
 			return iterator{ _Reference_container<Ts>::begin()... };
 		}
 
-		iterator end()
+		iterator end() const
 		{
 			return iterator{ _Reference_container<Ts>::end()... };
 		}
