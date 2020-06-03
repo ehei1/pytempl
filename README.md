@@ -44,7 +44,6 @@ for(auto v : z ) {
   float f{};
 
   std::tie( i, f ) = v;
-  auto& v = std::get<0>; // int&
 }
 ```
 
