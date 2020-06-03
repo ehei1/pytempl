@@ -33,6 +33,8 @@ for( auto e : pytempl::enumerate(iv) ) {
 
 ### [range](https://docs.python.org/3/library/functions.html#func-range)
 ```cpp
+#include "pytempl/range.h"
+
 for (auto i : pytempl::range(0, 5)) {
     // i = 0, 1, 2, 3, 4
 }
