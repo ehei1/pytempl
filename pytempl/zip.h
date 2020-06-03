@@ -42,11 +42,8 @@ namespace pytempl {
 		}
 	};
 
-	class Dummy_iterator_trait
-	{};
-
 	template<typename...Ts>
-	class Container_iterator : public std::iterator_traits<Dummy_iterator_trait>, public _Container_iterator<Ts>...
+	class Container_iterator : public std::iterator_traits<void>, public _Container_iterator<Ts>...
 	{
 	public:
 		using iterator_category = typename std::forward_iterator_tag;
