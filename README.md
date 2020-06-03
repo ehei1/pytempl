@@ -5,7 +5,7 @@ reverse implementation of python functions by C++
   * [enumerate](#enumerate)
   * max
   * min
-  * range
+  * [range](#range)
   * [zip](#zip)
 * module
   * itertools
@@ -28,6 +28,13 @@ std::vector<int> iv{ 1, 2, 3, 4 ,5 };
 for( auto e : pytempl::enumerate(iv) ) {
 	auto idx = std::get<0>(e); // index
 	auto i = std::get<1>(e); // value of container
+}
+```
+
+### [range](https://docs.python.org/3/library/functions.html#func-range)
+```cpp
+for (auto i : pytempl::range(0, 5)) {
+    // i = 0, 1, 2, 3, 4
 }
 ```
 
