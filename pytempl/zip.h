@@ -9,21 +9,7 @@
 /*
 https://docs.python.org/3/library/functions.html#zip
 
-// mission
-iterator supports not yet
-
-// usage
-std::vector<int> iv{ 1, 2, 3, 4 ,5 };
-std::vector<float> fv{ 1, 2, 3, 4, 5 };
-auto z = pytempl::zip(iv, fv);
-
-for(auto v : z ) {
-	int i{};
-	float f{};
-
-	std::tie( i, f ) = v;
-	auto& v = std::get<0>; // int&
-}
+// TODO: iterator supports
 */
 namespace pytempl {
 	template<typename T>
@@ -62,6 +48,7 @@ namespace pytempl {
 	public:
 		using value_type = std::tuple<typename _Container_iterator<Ts>::value_type...>;
 		using iterator_category = std::forward_iterator_tag;
+		using reference = value_type;
 
 	public:
 		Container_iterator( Ts&&...ts ) : _Container_iterator<Ts>( ts )...

@@ -13,7 +13,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace test
 {
-	TEST_CLASS( UnitTest1 )
+	TEST_CLASS( ZipTest )
 	{
 	public:
 		TEST_METHOD( TestIterationByShortestContainer )

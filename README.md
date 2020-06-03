@@ -20,8 +20,15 @@ for(auto v : z ) {
 
 [enumerate](https://docs.python.org/3/library/functions.html#enumerate)
 ```
-incoming...
+#include "pytempl/enumerate.h"
+
+std::vector<int> iv{ 1, 2, 3, 4 ,5 };
+
+for( auto e : pytempl::enumerate(iv) ) {
+	auto idx = std::get<0>(e); // index
+	auto i = std::get<1>(e); // value of container
+}
 ```
 
-missions
+TODO
 * doxygen apply

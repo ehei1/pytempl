@@ -8,16 +8,16 @@
 https://docs.python.org/3/library/functions.html#enumerate
 */
 namespace pytempl {
-	template<typename ITER, typename START>
+	template<typename ITER, typename START = int>
 	class Enumerate_iterator
 	{
-		START m_index{ -1 };
+		START m_index{};
 		ITER m_iterator;
 
-		using value_type = std::tuple<int, T::reference>;
+		using value_type = std::tuple<int, typename ITER::reference>;
 
 	public:
-		explicit Enumerate_iterator(ITER&& iter, START index) : m_iterator{ iter }, m_index{ index - 1 }
+		explicit Enumerate_iterator(ITER&& iter, START index) : m_iterator{ iter }, m_index{ index }
 		{}
 
 		explicit Enumerate_iterator(ITER&& iter) : m_iterator{ iter }
@@ -25,7 +25,7 @@ namespace pytempl {
 
 		value_type operator*()
 		{
-			return { ++m_index, *m_iterator };
+			return { m_index++, *m_iterator };
 		}
 
 		void operator++()
@@ -51,30 +51,30 @@ namespace pytempl {
 		T& m_container;
 		const START m_start{};
 
-		using iterator_type = typename _Container_adaptor<T>::iterator_type;
+		using iterator_type = Enumerate_iterator<typename _Container_adaptor<T>::iterator_type, START>;
 
 	public:
 		explicit _Enumerate(T&& t, START start) : m_container{ t }, m_start{ start }
 		{}
 
-		iterator_type begin()
+		iterator_type begin() const
 		{
 			auto iterator = _Container_adaptor<T>::begin(m_container);
 
-			return Enumerate_iterator<T, START>(iterator, m_start);
+			return iterator_type{ std::move( iterator ), m_start };
 		}
 
-		iterator_type end()
+		iterator_type end() const
 		{
 			auto iterator = _Container_adaptor<T>::end(m_container);
 
-			return Enumerate_iterator<T, START>(iterator);
+			return iterator_type{ std::move( iterator ) };
 		}
 	};
 
-	template<typename T, typename START>
-	_Enumerate<T, START> enumerate(T&& t, START start)
+	template<typename T, typename START = int>
+	auto enumerate(T&& t, START start = 0)
 	{
-		return {t, start};
+		return _Enumerate<T, START>{ std::forward<T>( t ), start };
 	}
 }

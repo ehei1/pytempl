@@ -11,12 +11,12 @@ namespace pytempl
 		using iterator_type = typename T::iterator;
 
 	public:
-		iterator_type begin(T& t)
+		iterator_type begin(T& t) const
 		{
 			return std::begin(t);
 		}
 
-		iterator_type end(T& t)
+		iterator_type end(T& t) const
 		{
 			return std::end(t);
 		}
@@ -29,12 +29,12 @@ namespace pytempl
 		using iterator_type = typename T::const_iterator;
 
 	public:
-		iterator_type begin(T const& t)
+		iterator_type begin(T const& t) const
 		{
 			return std::cbegin(t);
 		}
 
-		iterator_type end(T const& t)
+		iterator_type end(T const& t) const
 		{
 			return std::cend(t);
 		}
