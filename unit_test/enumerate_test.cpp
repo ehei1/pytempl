@@ -45,19 +45,6 @@ namespace test
 			}
 		}
 
-		TEST_METHOD( TestRvalue )
-		{
-			std::vector<int> v( 10 );
-			std::iota( std::begin( v ), std::end( v ), 0 );
-
-			for ( auto e : pytempl::enumerate( std::move(v) ) ) {
-				auto i = std::get<0>( e );
-				auto ii = std::get<1>( e );
-
-				Assert::IsTrue( i == ii );
-			}
-		}
-
 		TEST_METHOD( TestLvalue )
 		{
 			std::vector<int> v( 10 );

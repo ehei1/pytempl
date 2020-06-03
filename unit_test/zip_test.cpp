@@ -111,22 +111,22 @@ namespace test
 		TEST_METHOD( TestConstIteration )
 		{
 			using Int_container = std::vector<int>;
-			Int_container i(10);
+			Int_container i(5);
 			std::iota( std::begin( i ), std::end( i ), 0 );
 
-			//auto zip = pytempl::zip( i );
+			auto zip = pytempl::zip( i );
 
-			//Int_container ii;
-			//auto insert = []( auto vv ) {
-			//	int v;
+			Int_container ii;
+			auto insert = []( auto vv ) {
+				int v{};
 
-			//	//std::tie( v ) = *iterator;
+				std::tie( v ) = vv;
 
-			//	return v;
-			//};
-			//std::transform( std::begin( zip ), std::end( zip ), std::back_inserter( ii ), insert );
+				return v;
+			};
+			std::transform( std::begin( zip ), std::end( zip ), std::back_inserter( ii ), insert );
 
-			Assert::IsTrue( true );
+			Assert::IsTrue( ii == Int_container{ 0,1,2,3,4 });
 		}
 	};
 }

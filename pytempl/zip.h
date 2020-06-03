@@ -42,12 +42,17 @@ namespace pytempl {
 		}
 	};
 
+	class Dummy_iterator_trait
+	{};
+
 	template<typename...Ts>
-	class Container_iterator : _Container_iterator<Ts>...
+	class Container_iterator : public std::iterator_traits<Dummy_iterator_trait>, public _Container_iterator<Ts>...
 	{
 	public:
+		using iterator_category = typename std::forward_iterator_tag;
 		using value_type = std::tuple<typename _Container_iterator<Ts>::value_type...>;
-		using iterator_category = std::forward_iterator_tag;
+		using difference_type = void;
+		using pointer = value_type*;
 		using reference = value_type;
 
 	public:
@@ -111,7 +116,7 @@ namespace pytempl {
 			return _Container_adaptor<T>::begin( m_container );
 		}
 
-		iterator_type end()
+		iterator_type end() 
 		{
 			return _Container_adaptor<T>::end( m_container );
 		}
