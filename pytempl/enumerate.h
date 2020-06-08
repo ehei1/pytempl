@@ -17,10 +17,10 @@ namespace pytempl {
 		using value_type = std::tuple<int, typename ITER::reference>;
 
 	public:
-		explicit Enumerate_iterator(ITER&& iter, START index) : m_iterator{ iter }, m_index{ index }
+		explicit Enumerate_iterator(ITER&& iter, START index) : m_iterator{ std::forward<ITER>(iter) }, m_index{ index }
 		{}
 
-		explicit Enumerate_iterator(ITER&& iter) : m_iterator{ iter }
+		explicit Enumerate_iterator(ITER&& iter) : m_iterator{ std::forward<ITER>(iter) }
 		{}
 
 		value_type operator*()
@@ -28,17 +28,19 @@ namespace pytempl {
 			return { m_index++, *m_iterator };
 		}
 
-		void operator++()
+		Enumerate_iterator<ITER, START>& operator++()
 		{
 			++m_iterator;
+
+			return *this;
 		}
 
-		bool operator==(Enumerate_iterator<ITER, START>& iter)
+		bool operator==(const Enumerate_iterator<ITER, START>& iter) const
 		{
 			return iter.m_iterator == m_iterator;
 		}
 
-		bool operator!=(Enumerate_iterator<ITER, START>& iter)
+		bool operator!=(const Enumerate_iterator<ITER, START>& iter) const
 		{
 			return !operator==(iter);
 		}
@@ -54,7 +56,7 @@ namespace pytempl {
 		using iterator_type = Enumerate_iterator<typename _Container_adaptor<T>::iterator_type, START>;
 
 	public:
-		explicit _Enumerate(T&& t, START start) : m_container{ t }, m_start{ start }
+		explicit _Enumerate(T& t, START start) : m_container{ t }, m_start{ start }
 		{}
 
 		iterator_type begin() const
@@ -73,8 +75,8 @@ namespace pytempl {
 	};
 
 	template<typename T, typename START = int>
-	auto enumerate(T&& t, START start = 0)
+	auto enumerate(T& t, START start = 0)
 	{
-		return _Enumerate<T, START>{ std::forward<T>( t ), start };
+		return _Enumerate<T, START>{ t, start };
 	}
 }

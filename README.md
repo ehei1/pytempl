@@ -9,7 +9,7 @@ reverse implementation of python functions by C++
   * [enumerate](#enumerate)
   * max
   * min
-  * range
+  * [range](#range)
   * [zip](#zip)
 * module
   * itertools
@@ -34,6 +34,15 @@ for( auto e : pytempl::enumerate(iv) ) {
 }
 ```
 
+### [range](https://docs.python.org/3/library/functions.html#func-range)
+```cpp
+#include "pytempl/range.h"
+
+for (auto i : pytempl::range(0, 5)) {
+    // i = 0, 1, 2, 3, 4
+}
+```
+
 ### [zip](https://docs.python.org/3/library/functions.html#zip)
 ```cpp
 #include "pytempl/zip.h"
@@ -47,7 +56,6 @@ for(auto v : z ) {
   float f{};
 
   std::tie( i, f ) = v;
-  auto& v = std::get<0>; // int&
 }
 ```
 
