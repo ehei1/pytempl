@@ -52,10 +52,8 @@ std::vector<float> fv{ 1, 2, 3, 4, 5 };
 auto z = pytempl::zip(iv, fv);
 
 for(auto v : z ) {
-  int i{};
-  float f{};
-
-  std::tie( i, f ) = v;
+  auto i = std::get<0>(v);
+  auto f = std::get<1>(v);
 }
 ```
 
