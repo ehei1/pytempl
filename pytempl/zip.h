@@ -1,148 +1,187 @@
 #pragma once
 
-#include <set>
 #include <tuple>
-#include <type_traits>
 
-#include "common\_container_adaptor.h"
 
-/*
-https://docs.python.org/3/library/functions.html#zip
-
-// TODO: iterator supports
-*/
-namespace pytempl {
-	template<typename T>
-	class _Container_iterator
+namespace pytempl
+{
+	template<typename Container_iterators, typename Container_values>
+	struct Iterator
 	{
-	public:
-		T m_iterator;
+		Container_iterators _container_iterators;
+		static constexpr size_t Iterator_size = std::tuple_size< Container_iterators>::value;
 
-		using value_type = typename T::reference;
+		using reference = Container_values;
 
 	public:
-		_Container_iterator( T& t ) : m_iterator{ t }
+		Iterator(Container_iterators&& container_iterators) : _container_iterators{ std::forward<Container_iterators>(container_iterators) }
 		{}
 
-		value_type get_value() const
+		bool operator==(const Iterator& other) const
 		{
-			return *m_iterator;
+			return _is_equal<Iterator_size>(*this, other);
 		}
 
-		bool iterate()
+		bool operator!=(const Iterator& other) const
 		{
-			++m_iterator;
-
-			return true;
+			return !operator==(other);
 		}
 
-		bool operator==( const _Container_iterator<T>& _iterator ) const
+		Container_values operator*()
 		{
-			return _iterator != m_iterator;
-		}
-	};
-
-	template<typename...Ts>
-	class Container_iterator : public std::iterator_traits<void>, public _Container_iterator<Ts>...
-	{
-	public:
-		using iterator_category = typename std::forward_iterator_tag;
-		using value_type = std::tuple<typename _Container_iterator<Ts>::value_type...>;
-		using difference_type = void;
-		using pointer = value_type*;
-		using reference = value_type;
-
-	public:
-		Container_iterator( Ts&&...ts ) : _Container_iterator<Ts>( ts )...
-		{}
-
-		value_type operator*() const
-		{
-			return{ _Container_iterator<Ts>::get_value()... };
+			return _get_values(std::make_index_sequence<Iterator_size>());
 		}
 
-		void operator++()
+		Iterator& operator++()
 		{
-			std::initializer_list<bool>{ _Container_iterator<Ts>::iterate()... };
-		}
+			_iterate(std::make_index_sequence<Iterator_size>());
 
-		bool operator==( const Container_iterator<Ts...>& iterator ) const
-		{
-			return _is_equal<Ts...>( iterator );
-		}
-
-		bool operator!=( const Container_iterator<Ts...>& iterator ) const
-		{
-			return !operator==( iterator );
+			return *this;
 		}
 
 	private:
-		template<typename A, typename...As>
-		bool _is_equal( const Container_iterator<Ts...>& iterator ) const
+		template<size_t Index>
+		bool _is_equal(const Iterator& lhs, const Iterator& rhs) const
 		{
-			auto lhs{ _Container_iterator<A>::m_iterator };
-			auto rhs{ static_cast<_Container_iterator<A>>( iterator ).m_iterator };
+			constexpr size_t tuple_index = Index - 1;
 
-			if ( lhs == rhs ) {
-				return true;
-			}
+			auto lhs_iter = std::get<tuple_index>(lhs._container_iterators);
+			auto rhs_iter = std::get<tuple_index>(rhs._container_iterators);
 
-			auto r{ std::set<bool>{ _is_equal<As>( iterator )... } };
-
-			if ( r.count( true ) ) {
+			if (lhs_iter == rhs_iter) {
 				return true;
 			}
 			else {
-				return false;
+				return _is_equal<tuple_index>(lhs, rhs);
 			}
+		}
+
+		template<>
+		bool _is_equal<0>(const Iterator& lhs, const Iterator& rhs) const
+		{
+			return false;
+		}
+
+		template<std::size_t... Indices>
+		Container_values _get_values(std::index_sequence<Indices...>)
+		{
+			return std::make_tuple(*(std::get<Indices>(_container_iterators))...);
+		}
+
+		template<std::size_t... Indices>
+		void _iterate(std::index_sequence<Indices...>)
+		{
+			std::make_tuple((std::get<Indices>(_container_iterators)++)...);
 		}
 	};
 
-	template<typename T>
-	class _Reference_container : public _Container_adaptor<T>
+	template<typename T, typename...>
+	struct _Zip_element
 	{
-		T& m_container;
-		using iterator_type = typename _Container_adaptor<T>::iterator_type;
+		T _container;
 
-	public:
-		_Reference_container( T& t ) : m_container{ t }
+		//protected:
+		using container_type = typename std::decay_t<T>;
+		using iterator_type = typename container_type::iterator;
+		using const_iterator_type = typename container_type::const_iterator;
+		using value_type = typename container_type::value_type;
+
+		//protected:
+		_Zip_element(T&& t) : _container{ std::forward<T>(t) }
 		{}
 
-		iterator_type begin() const
+		T get()
 		{
-			return _Container_adaptor<T>::begin( m_container );
+			return _container;
 		}
 
-		iterator_type end() const
+		auto begin()
 		{
-			return _Container_adaptor<T>::end( m_container );
+			return std::begin(_container);
+		}
+
+		auto end()
+		{
+			return std::end(_container);
 		}
 	};
 
 	template<typename...Ts>
-	class _Zip : public _Reference_container<Ts>...
+	class Zip;
+
+	template<typename T, typename...Ts>
+	struct Zip<T, Ts...> : public _Zip_element<T, Ts...>, public Zip<Ts...>
 	{
-	public:
-		using iterator = Container_iterator<typename _Reference_container<Ts>::iterator_type...>;
+		using _Container = std::tuple<T, Ts...>;
+		using _Element = _Zip_element<T, Ts...>;
+		using _Base = Zip<Ts...>;
+
+		//static constexpr size_t _tuple_size = 1 + sizeof...(Ts);
+
+		using Container_iterators = std::tuple<typename _Element::iterator_type, typename Zip<Ts>::iterator_type...>;
+		using Container_values = std::tuple<typename _Element::value_type, typename Zip<Ts>::value_type...>;
+
+		using iterator = Iterator<Container_iterators, Container_values>;
 
 	public:
-		_Zip ( Ts&...ts ) : _Reference_container<Ts>( ts )...
+		Zip(T&& t, Ts&&...ts) :
+			Zip<Ts...>{ std::forward<Ts>(ts)... },
+			_Zip_element<T, Ts...>{ std::forward<T>(t) }
 		{}
 
-		iterator begin() const
+		iterator begin()
 		{
-			return iterator{ _Reference_container<Ts>::begin()... };
+			auto iterators = _begin();
+
+			return Iterator<Container_iterators, Container_values>(std::move(iterators));
 		}
 
-		iterator end() const
+		iterator end()
 		{
-			return iterator{ _Reference_container<Ts>::end()... };
+			auto iterators = _end();
+
+			return Iterator<Container_iterators, Container_values>(std::move(iterators));
+		}
+
+	protected:
+		Container_iterators _begin()
+		{
+			return std::tuple_cat(std::tie(_Element::begin()), _Base::_begin());
+		}
+
+		Container_iterators _end()
+		{
+			return std::tuple_cat(std::tie(_Element::end()), _Base::_end());
+		}
+	};
+
+	template<typename T>
+	class Zip<T> : public _Zip_element<T>
+	{
+		using _Element = _Zip_element<T>;
+		using container = std::tuple<T>;
+		using value_type = typename std::remove_reference_t<T>::value_type;
+		using Container_iterators = std::tuple<typename _Element::iterator_type>;
+
+	public:
+		Zip(T&& t) : _Zip_element{ std::forward<T>(t) }
+		{}
+
+	protected:
+		Container_iterators _begin()
+		{
+			return std::tuple_cat(std::tie(begin()));
+		}
+
+		Container_iterators _end()
+		{
+			return std::tuple_cat(std::tie(end()));
 		}
 	};
 
 	template<typename...Ts>
 	auto zip(Ts&&...ts) noexcept
 	{
-		return _Zip<Ts...>{ ts... };
+		return Zip<Ts...>{ std::forward<Ts>(ts)... };
 	}
-};
+}

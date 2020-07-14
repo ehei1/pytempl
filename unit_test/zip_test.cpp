@@ -18,27 +18,32 @@ namespace test
 	public:
 		TEST_METHOD( TestIterationByShortestContainer )
 		{
-			std::vector<float> f{ 1,2,3,4,5,11,12 };
+			std::vector<int> f{ 1,2,3,4,5,11,12 };
 			std::vector<int> i{ 6,7,8,9,10 };
-			std::vector<std::string> s{ "ax", "bbbb", "c", "d" };
+			std::vector<float> ff{ 0,1,2 };
 
-			auto r{ pytempl::zip( f, i, s ) };
-			int count{};
+			size_t count{};
 
-			for ( auto v : r ) {
-				float ff;
-				int ii;
-				std::string ss;
-				std::tie( ff, ii, ss ) = v;
-
-				std::cout << ff << "\t" << ii << "\t" << ss << std::endl;
+			for (auto v : pytempl::zip(f, i, ff)) {
+				auto v0 = std::get<0>(v);
+				auto v1 = std::get<1>(v);
+				auto v2 = std::get<2>(v);
 
 				++count;
 			}
 
-			Assert::IsTrue( count == std::min( { f.size(), i.size(), s.size() } ) );
+			Assert::IsTrue(count == ff.size());
 		}
 
+		TEST_METHOD(TestSingleIteartion)
+		{
+			std::vector<int> f{ 1,2,3,4,5,11,12 };
+
+			for (auto v : pytempl::zip(f)) {
+				std::cout << v << std::endl;
+			}
+		}
+		
 		TEST_METHOD( TestSetValue )
 		{
 			struct Test {
@@ -49,9 +54,8 @@ namespace test
 
 			auto r{ pytempl::zip( t ) };
 
-			for ( auto v : r ) {
-				auto& vv = std::get<0>( v );
-				vv.i = 100;
+			for ( auto& v : r ) {
+				v.i = 100;
 			}
 
 			auto check = []( const Test& t ) { return t.i == 100; };
@@ -64,11 +68,7 @@ namespace test
 			auto r{ pytempl::zip( i ) };
 
 			for ( auto v : r ) {
-				int ii;
-
-				std::tie( ii ) = v;
-
-				std::cout << ii << std::endl;
+				std::cout << v << std::endl;
 			}
 
 			Assert::IsTrue( true );
