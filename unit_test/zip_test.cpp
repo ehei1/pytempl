@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iterator>
+#include <list>
 #include <numeric>
 #include <vector>
 
@@ -29,10 +30,12 @@ namespace test
 				auto v1 = std::get<1>(v);
 				auto v2 = std::get<2>(v);
 
+				std::cout << v0 << "," << v1 << "," << v2 << std::endl;
+
 				++count;
 			}
 
-			Assert::IsTrue(count == ff.size());
+			Assert::IsTrue(count == std::min({ f.size(), i.size(), ff.size() }));
 		}
 
 		TEST_METHOD(TestSingleIteartion)
@@ -72,6 +75,34 @@ namespace test
 			}
 
 			Assert::IsTrue( true );
+		}
+
+		TEST_METHOD(TestConstContainers)
+		{
+			const std::vector<int> i0{ 0,1,2,3,4 };
+			const std::vector<int> i1{ 0,1,2,3,4 };
+			
+			for (auto v : pytempl::zip(i0, i1)) {
+				std::cout << std::get<0>(v) << std::get<1>(v) << std::endl;
+			}
+
+			Assert::IsTrue(true);
+		}
+
+		TEST_METHOD(TestMixedContainers)
+		{
+			const std::vector<int> i0{ 0,1,2,3,4,5,6 };
+			std::vector<int> i1{ 0,1,2,3 };
+			std::list<std::string> s{ "h", "e", "l", "l", "o" };
+			auto& rs = s;
+
+			for (auto v : pytempl::zip(i0, i1, rs)) {
+				auto v0 = std::get<0>(v);
+				auto v1 = std::get<1>(v);
+				auto v2 = std::get<2>(v);
+			}
+
+			Assert::IsTrue(true);
 		}
 
 		TEST_METHOD( TestRefContainer )

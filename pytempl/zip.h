@@ -75,34 +75,56 @@ namespace pytempl
 		}
 	};
 
+	template<typename T>
+	struct _Zip_element_base
+	{
+		auto begin(T& t) const
+		{
+			return std::begin(t);
+		}
+
+		auto end(T& t) const
+		{
+			return std::end(t);
+		}
+	};
+
+	template<typename T>
+	struct _Zip_element_base<T const>
+	{
+		auto begin(T& t) const
+		{
+			return std::cbegin(t);
+		}
+
+		auto end(T& t) const
+		{
+			return std::cend(t);
+		}
+	};
+
 	template<typename T, typename...>
-	struct _Zip_element
+	struct _Zip_element : public _Zip_element_base<T>
 	{
 		T _container;
 
-		//protected:
 		using container_type = typename std::decay_t<T>;
-		using iterator_type = typename container_type::iterator;
-		using const_iterator_type = typename container_type::const_iterator;
+		using iterator_type = typename std::conditional_t< std::is_const<std::remove_reference_t<T>>::value, typename container_type::const_iterator, typename container_type::iterator >;
 		using value_type = typename container_type::value_type;
+		using Element_base = _Zip_element_base<T>;
 
-		//protected:
+	public:
 		_Zip_element(T&& t) : _container{ std::forward<T>(t) }
 		{}
 
-		T get()
+		iterator_type begin() const
 		{
-			return _container;
+			return Element_base::begin(_container);
 		}
 
-		auto begin()
+		iterator_type end() const
 		{
-			return std::begin(_container);
-		}
-
-		auto end()
-		{
-			return std::end(_container);
+			return Element_base::end(_container);
 		}
 	};
 
@@ -115,8 +137,6 @@ namespace pytempl
 		using _Container = std::tuple<T, Ts...>;
 		using _Element = _Zip_element<T, Ts...>;
 		using _Base = Zip<Ts...>;
-
-		//static constexpr size_t _tuple_size = 1 + sizeof...(Ts);
 
 		using Container_iterators = std::tuple<typename _Element::iterator_type, typename Zip<Ts>::iterator_type...>;
 		using Container_values = std::tuple<typename _Element::value_type, typename Zip<Ts>::value_type...>;
