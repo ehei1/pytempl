@@ -26,6 +26,9 @@
     <ClInclude Include="pytempl\range.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="pytempl\chain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

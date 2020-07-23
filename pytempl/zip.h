@@ -6,7 +6,7 @@
 namespace pytempl
 {
 	template<typename Container_iterators, typename Container_values>
-	struct Iterator
+	struct Zip_iterator
 	{
 		Container_iterators _container_iterators;
 		static constexpr size_t Iterator_size = std::tuple_size< Container_iterators>::value;
@@ -14,15 +14,15 @@ namespace pytempl
 		using reference = Container_values;
 
 	public:
-		Iterator(Container_iterators&& container_iterators) : _container_iterators{ std::forward<Container_iterators>(container_iterators) }
+		Zip_iterator(Container_iterators&& container_iterators) : _container_iterators{ std::forward<Container_iterators>(container_iterators) }
 		{}
 
-		bool operator==(const Iterator& other) const
+		bool operator==(const Zip_iterator& other) const
 		{
 			return _is_equal<Iterator_size>(*this, other);
 		}
 
-		bool operator!=(const Iterator& other) const
+		bool operator!=(const Zip_iterator& other) const
 		{
 			return !operator==(other);
 		}
@@ -32,16 +32,16 @@ namespace pytempl
 			return _get_values(std::make_index_sequence<Iterator_size>());
 		}
 
-		Iterator& operator++()
+		Zip_iterator& operator++()
 		{
-			_iterate(std::make_index_sequence<Iterator_size>());
+			_forward_iterate(std::make_index_sequence<Iterator_size>());
 
 			return *this;
 		}
 
 	private:
 		template<size_t Index>
-		bool _is_equal(const Iterator& lhs, const Iterator& rhs) const
+		bool _is_equal(const Zip_iterator& lhs, const Zip_iterator& rhs) const
 		{
 			constexpr size_t tuple_index = Index - 1;
 
@@ -57,7 +57,7 @@ namespace pytempl
 		}
 
 		template<>
-		bool _is_equal<0>(const Iterator& lhs, const Iterator& rhs) const
+		bool _is_equal<0>(const Zip_iterator& lhs, const Zip_iterator& rhs) const
 		{
 			return false;
 		}
@@ -69,7 +69,7 @@ namespace pytempl
 		}
 
 		template<std::size_t... Indices>
-		void _iterate(std::index_sequence<Indices...>)
+		void _forward_iterate(std::index_sequence<Indices...>)
 		{
 			std::make_tuple((std::get<Indices>(_container_iterators)++)...);
 		}
@@ -141,7 +141,7 @@ namespace pytempl
 		using Container_iterators = std::tuple<typename _Element::iterator_type, typename Zip<Ts>::iterator_type...>;
 		using Container_values = std::tuple<typename _Element::value_type, typename Zip<Ts>::value_type...>;
 
-		using iterator = Iterator<Container_iterators, Container_values>;
+		using iterator = Zip_iterator<Container_iterators, Container_values>;
 
 	public:
 		Zip(T&& t, Ts&&...ts) :
@@ -153,14 +153,14 @@ namespace pytempl
 		{
 			auto iterators = _begin();
 
-			return Iterator<Container_iterators, Container_values>(std::move(iterators));
+			return Zip_iterator<Container_iterators, Container_values>(std::move(iterators));
 		}
 
 		iterator end()
 		{
 			auto iterators = _end();
 
-			return Iterator<Container_iterators, Container_values>(std::move(iterators));
+			return Zip_iterator<Container_iterators, Container_values>(std::move(iterators));
 		}
 
 	protected:
@@ -200,8 +200,8 @@ namespace pytempl
 	};
 
 	template<typename...Ts>
-	auto zip(Ts&&...ts) noexcept
+	auto zip(Ts&&...ts)
 	{
-		return Zip<Ts...>{ std::forward<Ts>(ts)... };
+		return Zip<Ts...>{std::forward<Ts>(ts)...};
 	}
 }

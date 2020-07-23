@@ -14,7 +14,7 @@ reverse implementation of python functions by C++
 * module
   * itertools
     * accumulate
-    * chain
+    * [chain](#chain)
     * count
     * cycle
     * repeat
@@ -47,13 +47,28 @@ for (auto i : pytempl::range(0, 5)) {
 ```cpp
 #include "pytempl/zip.h"
 
-std::vector<int> iv{ 1, 2, 3, 4 ,5 };
-std::vector<float> fv{ 1, 2, 3, 4, 5 };
-auto z = pytempl::zip(iv, fv);
+std::vector<int> a{ 1, 2, 3, 4 ,5 };
+std::vector<float> b{ 6, 7, 8, 9, 10 };
 
-for(auto v : z ) {
-  auto i = std::get<0>(v);
-  auto f = std::get<1>(v);
+for(auto v : pytempl::zip(a, b)) {
+  auto i = std::get<0>(v); // 1, 2, 3, 4, 5
+  auto f = std::get<1>(v); // 6, 7, 8, 9, 10
+}
+```
+
+### [chain](https://docs.python.org/3/library/itertools.html#itertools.chain)
+```cpp
+#include "pytempl/chain.h"
+
+std::list<int> a{ 0,1,2,3 };
+std::array<int,3> b{ 4,5,6 };
+std::vector<int> c{ 7, };
+std::initializer_list<int> d{ 8,9 };
+
+std::vector<int> result;
+
+for (auto v : pytempl::chain(a, b, c, d)) {
+    // v is from 0 to 9
 }
 ```
 
