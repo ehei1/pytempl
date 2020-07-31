@@ -188,25 +188,34 @@ namespace pytempl {
 		}
 	};
 
-	/*template<typename Value_type, typename T, typename...Ts>
-	struct __check_same_types : __check_same_types<std::_Iter_value_t<T>, Ts...>
+	template<typename...Ts>
+	struct __check_same_types
+	{};
+
+	template<typename T>
+	struct __check_same_types<T>
 	{
-		__check_same_types()
-		{
-			static_assert(std::is_same<Value_Type, std::_Iter_value_t<T>, "");
-		}
+		using value_type = typename std::decay_t<T>::value_type;
+		static constexpr bool is_same = true;
 	};
 
 	template<typename T, typename...Ts>
-	struct _check_same_types : __check_same_types<std::_Iter_value_t<T>, Ts...>
+	struct __check_same_types<T, Ts...> : __check_same_types<Ts...>
 	{
-	
-	};*/
+		using value_type = typename std::decay_t<T>::value_type;
+		static constexpr bool is_same = std::is_same<value_type, __check_same_types<Ts...>::value_type>::value;
+	};
+
+	template<typename...Ts>
+	struct _check_same_types : __check_same_types<Ts...>
+	{
+		static constexpr bool is_same = __check_same_types<Ts...>::is_same;
+	};
 
 	template<typename...Ts>
 	auto chain(Ts&&...ts)
 	{
-		//_check_same_types<Ts...>();
+		static_assert(_check_same_types<Ts...>::is_same, "chain require same type about all containers");
 
 		return Chain<Ts...>{std::forward<Ts>(ts)...};
 	}
