@@ -1,5 +1,5 @@
 # pytempl
-reverse implementation of python functions by C++
+implementation of python functions by C++
 
 ### build
 * Visual Studio 2015(v140) or later
