@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="chain_test.cpp" />
+    <ClCompile Include="cycle_test.cpp" />
     <ClCompile Include="enumerate_test.cpp" />
     <ClCompile Include="range_test.cpp" />
     <ClCompile Include="stdafx.cpp">

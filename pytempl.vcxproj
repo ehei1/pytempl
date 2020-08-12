@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="pytempl\chain.h" />
     <ClInclude Include="pytempl\common\_container_adaptor.h" />
+    <ClInclude Include="pytempl\cycle.h" />
     <ClInclude Include="pytempl\enumerate.h" />
     <ClInclude Include="pytempl\range.h" />
     <ClInclude Include="pytempl\zip.h" />

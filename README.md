@@ -16,11 +16,40 @@ implementation of python functions by C++
     * accumulate
     * [chain](#chain)
     * count
-    * cycle
+    * [cycle](#cycle)
     * repeat
   * random
     * choice
     * chocies
+
+
+
+### [chain](https://docs.python.org/3/library/itertools.html#itertools.chain)
+```cpp
+#include "pytempl/chain.h"
+
+std::list<int> a{ 0,1,2,3 };
+std::array<int,3> b{ 4,5,6 };
+std::vector<int> c{ 7, };
+std::initializer_list<int> d{ 8,9 };
+
+std::vector<int> result;
+
+for (auto v : pytempl::chain(a, b, c, d)) {
+    // v is from 0 to 9
+}
+```
+
+### [cycle](https://docs.python.org/3/library/itertools.html#itertools.cycle)
+```cpp
+#include "pytempl/cycle.h"
+
+std::list<int> a{ 0,1,2, };
+
+for (auto v : pytempl::cycle(a, 2)) {
+    // v is 0, 1, 2, 0, 1, 2
+}
+```
 
 ### [enumerate](https://docs.python.org/3/library/functions.html#enumerate)
 ```cpp
@@ -55,22 +84,4 @@ for(auto v : pytempl::zip(a, b)) {
   auto f = std::get<1>(v); // 6, 7, 8, 9, 10
 }
 ```
-
-### [chain](https://docs.python.org/3/library/itertools.html#itertools.chain)
-```cpp
-#include "pytempl/chain.h"
-
-std::list<int> a{ 0,1,2,3 };
-std::array<int,3> b{ 4,5,6 };
-std::vector<int> c{ 7, };
-std::initializer_list<int> d{ 8,9 };
-
-std::vector<int> result;
-
-for (auto v : pytempl::chain(a, b, c, d)) {
-    // v is from 0 to 9
-}
-```
-
-
 
