@@ -28,9 +28,8 @@ namespace pytempl {
 
 		bool operator==(Chain_iterator const& other)
 		{
-			auto is_end = _is_iterator_end_impl<_iterator_count>::visit(_iterators, other._iterators, _iterator_index);
-
-			if (is_end) {
+			while (_is_iterator_end_impl<_iterator_count>::visit(_iterators, other._iterators, _iterator_index)) 
+			{
 				if (_iterator_index == _iterator_count - 1) {
 					return true;
 				}

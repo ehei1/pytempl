@@ -70,7 +70,19 @@ namespace test
 			Assert::IsTrue(result == expected);
 		}
 
-		TEST_METHOD(TestEmptyChain)
+		TEST_METHOD(TestEmptySingleChain)
+		{
+			std::list<float> a;
+			std::vector<float> result;
+
+			for (auto v : pytempl::chain(a)) {
+				result.push_back(v);
+			}
+
+			Assert::IsTrue(result.empty());
+		}
+
+		TEST_METHOD(TestEmptyMultiChain)
 		{
 			std::list<float> a;
 			std::vector<float> b;
