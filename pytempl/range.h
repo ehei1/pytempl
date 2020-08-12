@@ -28,7 +28,7 @@ namespace pytempl
 		explicit _Range_iterator(T stop) : m_stop{ stop }
 		{}
 
-		_Range_iterator<T>& operator++()
+		_Range_iterator& operator++()
 		{
 			m_start += m_step;
 
@@ -40,7 +40,7 @@ namespace pytempl
 			return m_start;
 		}
 
-		bool operator==(const _Range_iterator<T>& iterator) const
+		bool operator==(const _Range_iterator& iterator) const
 		{
 			if (0 < m_step)
 			{
@@ -52,7 +52,7 @@ namespace pytempl
 			}
 		}
 
-		bool operator!=(const _Range_iterator<T>& iterator) const
+		bool operator!=(const _Range_iterator& iterator) const
 		{
 			return !operator==(iterator);
 		}
