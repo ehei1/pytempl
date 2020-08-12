@@ -15,10 +15,13 @@ implementation of python functions by C++
   * itertools
     * accumulate
     * [chain](#chain)
+	* [cycle](#cycle)
     * count
-    * [cycle](#cycle)
+	* dropwhile
+	* filterfalse
+    * islice
     * repeat
-  * random
+    * random
     * choice
     * chocies
 
