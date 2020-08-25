@@ -13,11 +13,13 @@ namespace pytempl {
 		using pointer = value_type * ;
 		using reference = value_type & ;
 
+	private:
 		Iterator _iterator;
 		Iterator _begin_iterator;
 		size_t _count{};
 		bool _is_infinite{};
 
+	public:
 		Cycle_iterator(Iterator& iterator, size_t count) : _iterator{ iterator }, _begin_iterator{ iterator }, _count{ count }, _is_infinite{ !count }
 		{}
 
@@ -59,7 +61,7 @@ namespace pytempl {
 	};
 
 	template<typename T>
-	struct Cycle
+	class Cycle
 	{
 		using Iterator_type = typename std::decay_t<T>::iterator;
 		using Cycle_Iterator_type = Cycle_iterator<Iterator_type>;
@@ -67,6 +69,7 @@ namespace pytempl {
 		T _container;
 		size_t const _count{};
 
+	public:
 		Cycle(T&& t, size_t count) :_container{ std::forward<T>(t) }, _count{ count }
 		{}
 
