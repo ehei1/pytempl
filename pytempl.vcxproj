@@ -24,6 +24,7 @@
     <ClInclude Include="pytempl\cycle.h" />
     <ClInclude Include="pytempl\enumerate.h" />
     <ClInclude Include="pytempl\range.h" />
+    <ClInclude Include="pytempl\repeat.h" />
     <ClInclude Include="pytempl\zip.h" />
   </ItemGroup>
   <ItemGroup>

@@ -7,8 +7,6 @@ implementation of python functions by C++
 ### contents
 * builtin
   * [enumerate](#enumerate)
-  * max
-  * min
   * [range](#range)
   * [zip](#zip)
 * module
@@ -20,7 +18,7 @@ implementation of python functions by C++
 	* dropwhile
 	* filterfalse
     * islice
-    * repeat
+    * [repeat](#repeat)
     * random
     * choice
     * chocies
@@ -72,6 +70,15 @@ for( auto e : pytempl::enumerate(iv) ) {
 
 for (auto i : pytempl::range(0, 5)) {
     // i = 0, 1, 2, 3, 4
+}
+```
+
+### [repeat](https://docs.python.org/3.8/library/itertools.html#itertools.repeat)
+```cpp
+#include "pytempl/repeat.h"
+
+for (auto v : pytempl::repeat(42, 4)) {
+    // v = 42, 42, 42, 42
 }
 ```
 
