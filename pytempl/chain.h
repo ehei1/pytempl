@@ -7,6 +7,8 @@
 #include <tuple>
 #include <type_traits>
 
+#include "common/_iterator_adaptor.h"
+
 
 namespace pytempl {
 	template<typename Iterators>
@@ -141,17 +143,6 @@ namespace pytempl {
 	{
 		using _container_types = std::tuple<Ts...>;
 		_container_types _containers;
-
-		template<typename T>
-		struct _make_iterator_type
-		{
-			using container = std::decay_t<T>;
-			using iterator = typename container::iterator;
-			using const_iterator = typename container::const_iterator;
-			using type = std::conditional_t<std::is_const<std::remove_reference<T>>::value, const_iterator, iterator>;
-		};
-		template<typename T>
-		using _make_iterator_type_t = typename _make_iterator_type<T>::type;
 
 		using _iterator_types = std::tuple<_make_iterator_type_t<Ts>...>;
 

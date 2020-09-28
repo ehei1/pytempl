@@ -35,6 +35,12 @@
     <ClInclude Include="pytempl\repeat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="pytempl\dropwhile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pytempl\common\_iterator_adaptor.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

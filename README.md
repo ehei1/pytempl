@@ -15,7 +15,7 @@ implementation of python functions by C++
     * [chain](#chain)
 	* [cycle](#cycle)
     * count
-	* dropwhile
+	* [dropwhile]dropwhile(#dropwhile)
 	* filterfalse
     * islice
     * [repeat](#repeat)
@@ -49,6 +49,18 @@ std::list<int> a{ 0,1,2, };
 
 for (auto v : pytempl::cycle(a, 2)) {
     // v is 0, 1, 2, 0, 1, 2
+}
+```
+
+### [dropwhile](https://docs.python.org/3.8/library/itertools.html#itertools.dropwhile)
+```cpp
+#include "pytempl/dropwhile.h"
+
+auto a{ 1, 4, 6, 4, 1 };
+auto p = [](int x) { return x < 5; }; 
+
+for(auto v : pytempl::dropwhile(p, a)) {
+    // v = 6, 4, 1
 }
 ```
 
