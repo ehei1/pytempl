@@ -15,7 +15,7 @@ implementation of python functions by C++
     * [chain](#chain)
 	* [cycle](#cycle)
     * count
-	* [dropwhile]dropwhile(#dropwhile)
+	* [dropwhile](#dropwhile)
 	* filterfalse
     * islice
     * [repeat](#repeat)
