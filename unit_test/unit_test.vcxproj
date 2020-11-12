@@ -158,6 +158,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ChainMap_test.cpp" />
     <ClCompile Include="chain_test.cpp" />
     <ClCompile Include="cycle_test.cpp" />
     <ClCompile Include="dropwhile_test.cpp" />

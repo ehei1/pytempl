@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ChainMap.h" />
     <ClInclude Include="pytempl\chain.h" />
     <ClInclude Include="pytempl\common\_container_adaptor.h" />
     <ClInclude Include="pytempl\common\_iterator_adaptor.h" />

@@ -10,6 +10,8 @@ implementation of python functions by C++
   * [range](#range)
   * [zip](#zip)
 * module
+  * collections
+    * ChainMap
   * itertools
     * accumulate
     * [chain](#chain)
