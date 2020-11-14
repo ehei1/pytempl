@@ -1,5 +1,5 @@
 # pytempl
-implementation of python functions by C++
+c++ template library by python inspired
 
 ### build
 * Visual Studio 2015(v140) or later
